@@ -1,6 +1,7 @@
 import time
 import pyupbit
 import datetime
+import numpy as np
 
 access = "1vlYNWRQVZxdlmb95ALVru6rbXXjQDdjxx1nwB6n"
 secret = "IJjZlUKxAAPHxkJlIxQUxzWfzWTNiiIpiy1ixWSb"
@@ -22,10 +23,10 @@ def get_best_k(ticker):
     """최근 2일 데이터로 오늘 최적 k값 결정"""
     best_k=0.01
 
-    for k in range(0.02, 1.0):
-        if get_ror(best_k, 2) < get_ror(k, 2):
+    for k in np.arange(0.02, 1.0, 0.01):
+        if get_ror(ticker, best_k, 2) < get_ror(ticker, k, 2):
             best_k = k
-        k = k + 0.01
+        
 
     return best_k
 
@@ -86,7 +87,7 @@ while True:
                 if current_price*coin > 5000:
                     upbit.sell_market_order(ticker, coin*0.9995)
             time.sleep(1)
-            
+
     except Exception as e:
         print(e)
         time.sleep(1)
