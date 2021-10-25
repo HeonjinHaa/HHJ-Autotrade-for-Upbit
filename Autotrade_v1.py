@@ -60,9 +60,12 @@ def buy_coin(ticker):
     ratio = holding_ratio(ticker)
 
     if ((ratio + 0.1 < 1/len(coin_list)) and (target_price < current_price)):
-        krw = total_seed()/len(coin_list)
+        """가용 시드 = 최대 쓸 수 있는 돈 - 지금 그 종목에 들어가 있는 돈"""
+        available_seed = (total_seed()/len(coin_list)) - (get_balance(ticker[4:]) * get_current_price(ticker))
+        """ krw = 현재 현금 잔고"""
+        krw = get_balance("KRW")
         if krw > 5000 :
-            upbit.buy_market_order(ticker, krw*0.9995)
+            upbit.buy_market_order(ticker, available_seed*0.9995)
 
 def sell_coin(ticker):
     """매도"""
