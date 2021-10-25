@@ -35,11 +35,11 @@ def get_current_price(ticker):
     return pyupbit.get_orderbook(ticker=ticker)["orderbook_units"][0]["ask_price"]
 
 def holding_ratio(ticker):
-    holding_amount = get_balance(ticker) * get_current_price(ticker)
+    holding_amount = get_balance(ticker[4:]) * get_current_price(ticker)
     total_amount = get_balance("KRW")
 
     for k in coin_list:
-        total_amount = total_amount + (get_balance(k) * get_current_price(k))
+        total_amount = total_amount + (get_balance(k[4:]) * get_current_price(k))
     
     ratio = holding_amount / total_amount
 
@@ -51,15 +51,14 @@ def buy_coin(ticker):
     current_price = get_current_price(ticker)
     ratio = holding_ratio(ticker)
 
-    if (ratio * len(coin_list) < 1) and (target_price < current_price):
+    if (ratio < 1 / len(coin_list)) and (target_price < current_price):
         krw = get_balance("KRW")/len(coin_list)
         if krw > 5000 :
             upbit.buy_market_order(ticker, krw*0.9995)
 
 def sell_coin(ticker):
     """매도"""
-    coin = get_balance(ticker)
-    if (coin * get_current_price(ticker)) > 5000:
+    if (get_balance(ticker[4:]) * get_current_price(ticker)) > 5000:
         upbit.sell_market_order(ticker, coin*0.9995)
 
 # 로그인
