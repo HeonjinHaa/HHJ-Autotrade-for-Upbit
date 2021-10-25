@@ -51,7 +51,7 @@ def buy_coin(ticker):
     current_price = get_current_price(ticker)
     ratio = holding_ratio(ticker)
 
-    if (ratio < 1 / len(coin_list)) and (target_price < current_price):
+    if (ratio * len(coin_list) < 0.99999999) and (target_price < current_price):
         krw = get_balance("KRW")/len(coin_list)
         if krw > 5000 :
             upbit.buy_market_order(ticker, krw*0.9995)
